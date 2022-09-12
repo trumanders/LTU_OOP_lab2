@@ -1,4 +1,4 @@
-package andjox1;
+package andjox;
 
 import java.math.BigDecimal;
 
