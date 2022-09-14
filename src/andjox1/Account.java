@@ -6,19 +6,19 @@ import java.math.BigDecimal;
  * This class defines the bank accounts.
  * @author Anders Johansson, andjox-1
  */
-public class Account {
+public abstract class Account {
     private static int countingAllAccountNumbers = 1000;
-    private static final BigDecimal INTEREST_RATE = new BigDecimal(1.2);
-    private static final String ACCOUNT_TYPE = "Sparkonto";
     private int accountNumber;
-    private BigDecimal balance = new BigDecimal(0);
-
+    private String accountType;
+    private BigDecimal balance = new BigDecimal("0");
 
     /* Constructor */
     public Account() {
         countingAllAccountNumbers++;
         accountNumber = countingAllAccountNumbers;
     }
+
+    public abstract int getNumberOfAccounts();
 
 
     /* TRANSACTIONS */
@@ -61,16 +61,8 @@ public class Account {
      * Gets the account type
      * @return String   The account type
      */
-    public static String getACCOUNT_TYPE() {
-        return ACCOUNT_TYPE;
-    }
-
-    /**
-     * Gets the interest rate of all accounts (static)
-     * @return BigDecimal   The interest that all accounts have
-     */
-    public static BigDecimal getInterestRate() {
-        return INTEREST_RATE;
+    public String getAccountType() {
+        return accountType;
     }
 
 

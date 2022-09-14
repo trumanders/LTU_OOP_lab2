@@ -14,6 +14,34 @@ public class BankLogic {
     private ArrayList<Customer> allCustomers = new ArrayList<>();
 
     /**
+     * Creates a credit account for a customer with the specified personal number.
+     * Returns the account number of the created credit account
+     * @param pNo   The personal number of the customer.
+     * @return int  The account number of the added account.
+     */
+    public int createCreditAccount(String pNo) {
+        int accountNum = 0;
+
+        return accountNum;
+    }
+
+
+    /**
+     * Gets a list of all transactions made on the account.
+     * The list contains information about date, time, amount, balance after the transaction.
+     * Return empty list of there are no transactions made on the account.
+     * Return null of the customer or account doesn't exist.
+     * @param pNo       The personal number of the customer.
+     * @param accountId The account number
+     * @return ArrayList<String>    The list of account info.
+     */
+    public ArrayList<String> getTransactions(String pNo, int accountId) {
+        ArrayList<String> transactionInfo = new ArrayList<>();
+
+        return transactionInfo;
+    }
+
+    /**
      * Returns a String ArrayList with all customers' persNum and full name.
      */
     public ArrayList<String> getAllCustomers() {
@@ -62,6 +90,8 @@ public class BankLogic {
         customerInfo.add(pNo + " " + allCustomers.get(customerIndex).getFullName());
 
         /* Then add the information about each account. */
+        // GÅ IGENOM FÖRST SAVINGS ACCOUNTS OCH SEN CREDIT ACCOUNT!!
+
         for (int i = 0; i < allCustomers.get(customerIndex).getNumberOfAccounts(); i++) {
             String accountNumber = Integer.toString(allCustomers.get(customerIndex).getAccountNumber(i));
             String formatBalance = formatMoneyString(allCustomers.get(customerIndex).getAccountBalance(i));
@@ -105,7 +135,7 @@ public class BankLogic {
         if (customerIndex < 0) {
             return -1;
         }
-        allCustomers.get(customerIndex).addAccount();
+        allCustomers.get(customerIndex).addSavingsAccount();
         return Account.getCountingAllAccountNumbers();
     }
 
@@ -319,7 +349,7 @@ public class BankLogic {
     private String formatPercentString(BigDecimal interestRate) {
         NumberFormat percentFormat = NumberFormat.getPercentInstance(new Locale("sv", "SE"));
         percentFormat.setMaximumFractionDigits(1);
-        return percentFormat.format(interestRate.divide(new BigDecimal(100)));
+        return percentFormat.format(interestRate.divide(new BigDecimal("100")));
     }
 
 
