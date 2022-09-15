@@ -1,6 +1,5 @@
 package andjox1;
 import java.math.BigDecimal;
-import java.sql.Array;
 import java.util.ArrayList;
 
 /**
@@ -14,7 +13,7 @@ public class Customer {
     private String lName;
     private final String PERSONAL_NUMBER;
 
-    /* Contains a list of the customer's savings accounts */
+    /* Contains a list of the customer's credit accounts */
     private ArrayList<CreditAccount> creditAccounts = new ArrayList<>();
 
     /* Contains a list of the customer's savings accounts */
@@ -26,7 +25,23 @@ public class Customer {
         this.PERSONAL_NUMBER = persNum;
     }
 
-    /* SETTERS */
+
+    /**
+     * Creates a new savings account
+     */
+    public void addSavingsAccount() {
+        this.savingsAccounts.add(new SavingsAccount());
+    }
+
+
+    /**
+     * Creates a new credit account
+     */
+    public void addCreditAccount() {
+        this.creditAccounts.add(new CreditAccount());
+    }
+
+
 
     /**
      * Sets the customer's first name
@@ -44,44 +59,39 @@ public class Customer {
         this.lName = lName;
     }
 
-    /**
-     * Creates a new account in the account-ArrayList
-     */
-    public void addSavingsAccount() {
-        this.savingsAccounts.add(new SavingsAccount());
-    }
-
 
     /**
      * Deletes the account with the specified index in the account-ArrayList
      * @param index     The index of the account to be deleted
      */
-    public void deleteAccount(int index) {
+    public void deleteSavingsAccount(int index) {
         savingsAccounts.remove(index);
     }
 
-
-    /**
-     * The method calls the deposit method for the specified account
-     * @param amount    The amount to pass to the deposit method
-     * @param index     The index of the account
-     */
-    public void makeDeposit(int amount, int index) {
-        savingsAccounts.get(index).deposit(amount);
-    }
-
-
-    /**
-     * Method to call the withdraw-method for the specified account
-     * @param amount    The amount to pass to the withdraw method
-     * @param index     The index of the account
-     */
-    public void makeWithdrawal(int amount, int index) {
-        savingsAccounts.get(index).withdraw(amount);
+    public void deleteCreditAccount(int index) {
+        creditAccounts.remove(index);
     }
 
 
     // GETTERS //
+
+    /**
+     * Get the savings account at the specified index
+     * @param index     The account index in the ArrayList
+     * @return          SavingsAccount-object
+     */
+    public SavingsAccount getSavingsAccount(int index) {
+        return savingsAccounts.get(index);
+    }
+
+    /**
+     * Get the credit account at the specified index
+     * @param index     The account index in the ArrayList
+     * @return          CreditAccount-object
+     */
+    public CreditAccount getCreditAccount(int index) {
+        return creditAccounts.get(index);
+    }
 
     /**
      * Get the customer's personal number
@@ -115,22 +125,30 @@ public class Customer {
         return getfName() + " " + getlName();
     }
 
+    public int getNumberOfSavingsAccounts() {
+        return savingsAccounts.size();
+    }
 
-    /**
-     * Gets the account numbers of a customer's accounts
-     * @return ArrrayList<Integer>  List of all the account numbers
-     */
-    public int getAccountNumber(int index) {
-        return savingsAccounts.get(index).getAccountNumber();
+    public int getNumberOfCreditAccounts() {
+        return creditAccounts.size();
     }
 
 
     /**
-     * Gets the balance of all accounts of the customer
-     * @return ArrayList<BigDecimal>    List of the balances of the accounts
+     * Gets the balance of the savings account at the specified index
+     * @return BigDecimal   The balance of the account
      */
-    public BigDecimal getAccountBalance(int index) {
+    public BigDecimal getSavingsAccountBalance(int index) {
         return savingsAccounts.get(index).getBalance();
+    }
+
+
+    /**
+     * Gets the balance of the credit account at the specified index
+     * @return BigDecimal   The balance of the account
+     */
+    public BigDecimal getCreditAccountBalance(int index) {
+        return creditAccounts.get(index).getBalance();
     }
 
 
@@ -148,16 +166,5 @@ public class Customer {
             }
         }
         return -1;
-    }
-
-
-    /**
-     * Calculates the interest on the account
-     * @return BigDecimal   The calculated interest
-     */
-    public BigDecimal calculateInterest(int index) {
-        /* Balance * (interestRate / 100) */
-
-        return savingsAccounts.get(index).getBalance().multiply(Account.getInterestRate().divide(new BigDecimal("100")));
     }
 }

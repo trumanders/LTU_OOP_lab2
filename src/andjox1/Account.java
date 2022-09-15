@@ -9,16 +9,14 @@ import java.math.BigDecimal;
 public abstract class Account {
     private static int countingAllAccountNumbers = 1000;
     private int accountNumber;
-    private String accountType;
-    private BigDecimal balance = new BigDecimal("0");
+    protected BigDecimal balance = new BigDecimal("0");
+
 
     /* Constructor */
     public Account() {
         countingAllAccountNumbers++;
         accountNumber = countingAllAccountNumbers;
     }
-
-    public abstract int getNumberOfAccounts();
 
 
     /* TRANSACTIONS */
@@ -31,13 +29,10 @@ public abstract class Account {
         balance = balance.add(new BigDecimal(amount));
     }
 
-    /**
-     * Calculates the balance after a withdrawal
-     * @param amount    The amount of money to withdraw
-     */
-    public void withdraw(int amount) {
-        balance = balance.subtract(new BigDecimal(amount));
-    }
+    public abstract void withdraw(int amount);
+    public abstract BigDecimal getInterestRate();
+    public abstract BigDecimal calculateInterest();
+    public abstract String getAccountType();
 
     /* GETTERS */
 
@@ -49,20 +44,14 @@ public abstract class Account {
         return this.accountNumber;
     }
 
+
+
     /**
      * Gets the balance od the account
      * @return BigDecimal   The account balance
      */
     public BigDecimal getBalance() {
         return balance;
-    }
-
-    /**
-     * Gets the account type
-     * @return String   The account type
-     */
-    public String getAccountType() {
-        return accountType;
     }
 
 

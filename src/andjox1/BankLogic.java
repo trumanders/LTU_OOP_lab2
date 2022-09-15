@@ -13,16 +13,34 @@ import java.util.Locale;
 public class BankLogic {
     private ArrayList<Customer> allCustomers = new ArrayList<>();
 
+
     /**
-     * Creates a credit account for a customer with the specified personal number.
-     * Returns the account number of the created credit account
-     * @param pNo   The personal number of the customer.
-     * @return int  The account number of the added account.
+     * Create a new savings account for a specified customer
+     * @param pNo   The personal number of the customer to create a new account for
+     * @return int  The account number of the created account
+     */
+    public int createSavingsAccount(String pNo) {
+        Customer customer = getCustomerByPersonalNumber(pNo);
+        if (customer == null) {
+            return -1;
+        }
+        customer.addSavingsAccount();
+        return Account.getCountingAllAccountNumbers();
+    }
+
+
+    /**
+     * Create a new credit account for a specified customer
+     * @param pNo   The personal number of the customer to create a new account for
+     * @return int  The account number of the created account
      */
     public int createCreditAccount(String pNo) {
-        int accountNum = 0;
-
-        return accountNum;
+        Customer customer = getCustomerByPersonalNumber(pNo);
+        if (customer == null) {
+            return -1;
+        }
+        customer.addCreditAccount();
+        return Account.getCountingAllAccountNumbers();
     }
 
 
@@ -77,9 +95,10 @@ public class BankLogic {
      * @return      Info about the customer
      */
     public ArrayList<String> getCustomer(String pNo) {
+
         /* Search for the customer using the personal number pNo */
-        int customerIndex = searchForCustomer(pNo);
-        if (customerIndex < 0) {
+        Customer customer = getCustomerByPersonalNumber(pNo);
+        if (customer == null) {
             return null;
         }
 
@@ -87,16 +106,23 @@ public class BankLogic {
         ArrayList<String> customerInfo = new ArrayList<>();
 
         /* Add customer name as the first element of the customerInfo */
-        customerInfo.add(pNo + " " + allCustomers.get(customerIndex).getFullName());
+        customerInfo.add(pNo + " " + customer.getFullName());
 
         /* Then add the information about each account. */
-        // GÅ IGENOM FÖRST SAVINGS ACCOUNTS OCH SEN CREDIT ACCOUNT!!
+        /* Iterate through savings accounts */
+        for (int i = 0; i < customer.getNumberOfSavingsAccounts(); i++) {
+            String accountNumber = Integer.toString(customer.getSavingsAccount(i).getAccountNumber());
+            String formatBalance = formatMoneyString(customer.getSavingsAccountBalance(i));
+            String formatInterestRate = formatPercentString(customer.getSavingsAccount(i).getInterestRate());
+            customerInfo.add(accountNumber + " " + formatBalance + " " + customer.getSavingsAccount(i).getAccountType() + " " + formatInterestRate);
+        }
 
-        for (int i = 0; i < allCustomers.get(customerIndex).getNumberOfAccounts(); i++) {
-            String accountNumber = Integer.toString(allCustomers.get(customerIndex).getAccountNumber(i));
-            String formatBalance = formatMoneyString(allCustomers.get(customerIndex).getAccountBalance(i));
-            String formatInterestRate = formatPercentString(Account.getInterestRate());
-            customerInfo.add(accountNumber + " " + formatBalance + " " + Account.getACCOUNT_TYPE() + " " + formatInterestRate);
+        /* Iterate through credit accounts */
+        for (int i = 0; i < customer.getNumberOfCreditAccounts(); i++) {
+            String accountNumber = Integer.toString(customer.getCreditAccount(i).getAccountNumber());
+            String formatBalance = formatMoneyString(customer.getCreditAccountBalance(i));
+            String formatInterestRate = formatPercentString(customer.getCreditAccount(i).getInterestRate());
+            customerInfo.add(accountNumber + " " + formatBalance + " " + customer.getCreditAccount(i).getAccountType() + " " + formatInterestRate);
         }
         return customerInfo;
     }
@@ -115,28 +141,13 @@ public class BankLogic {
             return false;
         }
         /* Search for the customer to change name */
-        int customerIndex = searchForCustomer(pNo);
-        if (customerIndex < 0) {
+        Customer customer = getCustomerByPersonalNumber(pNo);
+        if (customer == null) {
             return false;
         }
-        if (name.length() > 0) allCustomers.get(customerIndex).setfName(name);
-        if (surname.length() > 0) allCustomers.get(customerIndex).setlName(surname);
+        if (name.length() > 0) customer.setfName(name);
+        if (surname.length() > 0) customer.setlName(surname);
         return true;
-    }
-
-
-    /**
-     * Create a new account for a specified customer
-     * @param pNo   The personal number of the customer to create a new account for
-     * @return int  The account number of the created account
-     */
-    public int createSavingsAccount(String pNo) {
-        int customerIndex = searchForCustomer(pNo);
-        if (customerIndex < 0) {
-            return -1;
-        }
-        allCustomers.get(customerIndex).addSavingsAccount();
-        return Account.getCountingAllAccountNumbers();
     }
 
 
@@ -147,19 +158,26 @@ public class BankLogic {
      * @return String       A string containing the information, return null if the customer or acccount was not found
      */
     public String getAccount(String pNo, int accountId) {
-        int customerIndex = searchForCustomerAndAccount(pNo, accountId)[0];
-        int accountIndex = searchForCustomerAndAccount(pNo, accountId)[1];
 
-        /* If customer or account doesn't exist */
-        if (customerIndex < 0 || accountIndex < 0) {
+        //KOLLA IGENOM BÅDE SAVINGS OCH CREDIT. METODEN SOM SÖKER SKA SÖKA IGENOM BÅDA KONTOTYPER och kolla efter kontotyp
+        /* Personal number exists? */
+        Customer customer = getCustomerByPersonalNumber(pNo);
+        if (customer == null) {
             return null;
         }
 
-        /* Get info */
-        String accountNumber = Integer.toString(allCustomers.get(customerIndex).getAccountNumber(accountIndex));
-        String balance = formatMoneyString(allCustomers.get(customerIndex).getAccountBalance(accountIndex));
-        String accountType = Account.getACCOUNT_TYPE();
-        String interestRate = formatPercentString(Account.getInterestRate());
+        /* Search through all the customers accounts */
+        Account account = getAccountByCustomer(customer, accountId);
+
+        /* If account doesn't exist for that customer */
+        if (account == null) {
+            return null;
+        }
+
+        String accountType = account.getAccountType();
+        String accountNumber = Integer.toString(account.getAccountNumber());
+        String balance = formatMoneyString(account.getBalance());
+        String interestRate = formatPercentString(account.getInterestRate());
         return accountNumber + " " + balance + " " + accountType + " " + interestRate;
     }
 
@@ -172,19 +190,17 @@ public class BankLogic {
      * @return boolean  Returns true of the amount was > 0, both customer and it's account was found, and the deposit was made.
      */
     public boolean deposit(String pNo, int accountId, int amount) {
-        if (amount < 0) {
+        Customer customer = getCustomerByPersonalNumber(pNo);
+        if (amount < 0 || customer == null) {
             return false;
         }
-
-        /* Look for customer and account */
-        int customerIndex = searchForCustomerAndAccount(pNo, accountId)[0];
-        int accountIndex = searchForCustomerAndAccount(pNo, accountId)[1];
-        if (customerIndex < 0 || accountIndex < 0) {
+        Account account = getAccountByCustomer(customer, accountId);
+        if (account == null) {
             return false;
         }
 
         /* Make deposit */
-        allCustomers.get(customerIndex).makeDeposit(amount, accountIndex);
+        account.deposit(amount);
         return true;
     }
 
@@ -197,17 +213,18 @@ public class BankLogic {
      * @return boolean  Returns true of the amount was > 0, both customer and it's account was found, and the withdrawal was made.
      */
     public boolean withdraw(String pNo, int accountId, int amount) {
-        int customerIndex = searchForCustomerAndAccount(pNo, accountId)[0];
-        int accountIndex = searchForCustomerAndAccount(pNo, accountId)[1];
-
-        /* If amount is less than 0, or if customer or account doesn't exist */
-        if (amount < 0 || (customerIndex < 0 || accountIndex < 0)) {
+        Customer customer = getCustomerByPersonalNumber(pNo);
+        if (customer == null) {
+            return false;
+        }
+        Account account = getAccountByCustomer(customer, accountId);
+        if (amount < 0 || account == null) {
             return false;
         }
 
         /* Check if there is enough money on the account */
-        if (allCustomers.get(customerIndex).getAccountBalance(accountIndex).compareTo(new BigDecimal(amount)) >= 0) {
-            allCustomers.get(customerIndex).makeWithdrawal(amount, accountIndex);
+        if (account.getBalance().compareTo(new BigDecimal(amount)) >= 0) {
+            account.withdraw(amount);
             return true;
         }
         return false;
@@ -221,19 +238,18 @@ public class BankLogic {
      * @return String   Returns Accont number, balance, account tyoe, and interest before it is closed
      */
     public String closeAccount(String pNo, int accountId) {
-        int customerIndex = searchForCustomerAndAccount(pNo, accountId)[0];
-        int accountIndex = searchForCustomerAndAccount(pNo, accountId)[1];
-
-        /* If customer or account does not exist */
-        if (customerIndex < 0 || accountIndex < 0) {
+        Customer customer = getCustomerByPersonalNumber(pNo);
+        if (customer == null) {
             return null;
         }
 
-        /* Get account info */
-        String deletedAccountInfo = getDeletedAccountInfo(customerIndex, accountIndex);
+        Account account = getAccountByCustomer(customer, accountId);
 
-        /* Delete the account */
-        allCustomers.get(customerIndex).deleteAccount(accountIndex);
+        /* Get account info */
+        String deletedAccountInfo = getDeletedAccountInfo(account);
+
+        /* Delete the account */ // SAVINGS OR CREDIT? METODEN SOM SÖKER SKA SÖKA IGENOM BÅDA KONTOTYPER
+        allCustomers.remove(account);
         return deletedAccountInfo;
     }
 
@@ -244,40 +260,47 @@ public class BankLogic {
      * @return ArrayList    A list of information about the deleted customer and it's accounts
      */
     public ArrayList<String> deleteCustomer(String pNo) {
-        /* Get the index of the customer to delete */
-        int customerIndex = searchForCustomer(pNo);
+        Customer customer = getCustomerByPersonalNumber(pNo);
 
         /* If personal number not found, return null, else start collecting info */
-        if (customerIndex < 0) {
+        if (customer == null) {
             return null;
-        } else {
-            ArrayList<String> deletedCustomerInfo = new ArrayList<>();
-
-            /* Add personal number and name as the first element */
-            deletedCustomerInfo.add(pNo + " " + allCustomers.get(customerIndex).getFullName());
-
-            /* Add information about each account in the following elements of the ArrayList */
-            for (int i = 0; i < allCustomers.get(customerIndex).getNumberOfAccounts(); i++) {
-
-                /* For each account, add the information */
-                deletedCustomerInfo.add(getDeletedAccountInfo(customerIndex, i));
-            }
-
-            /* Delete customer accounts */
-            for (int i = 0; i < allCustomers.get(customerIndex).getNumberOfAccounts(); i++) {
-                allCustomers.get(customerIndex).deleteAccount(i);
-            }
-
-            /* Delete customer */
-            allCustomers.remove(customerIndex);
-            return deletedCustomerInfo;
         }
+        ArrayList<String> deletedCustomerInfo = new ArrayList<>();
+
+        /* Add personal number and name as the first element */
+        deletedCustomerInfo.add(pNo + " " + customer.getFullName());
+
+        /* Add information about each SAVINGS account in the following elements of the ArrayList */
+        for (int i = 0; i < customer.getNumberOfSavingsAccounts(); i++) {
+
+            /* For each account, add the information */
+            deletedCustomerInfo.add(getDeletedAccountInfo(customer.getSavingsAccount(i)));
+        }
+
+        /* Add information about each CREDIT account in the following elements of the ArrayList */
+        for (int i = 0; i < customer.getNumberOfCreditAccounts(); i++) {
+
+            /* For each account, add the information */
+            deletedCustomerInfo.add(getDeletedAccountInfo(customer.getCreditAccount(i)));
+        }
+
+        /* Delete customer savings accounts */
+        for (int i = 0; i < customer.getNumberOfSavingsAccounts(); i++) {
+            customer.deleteSavingsAccount(i);
+        }
+
+        /* Delete customer credit accounts */
+        for (int i = 0; i < customer.getNumberOfCreditAccounts(); i++) {
+            customer.deleteCreditAccount(i);
+        }
+        /* Delete customer */
+        allCustomers.remove(getCustomerByPersonalNumber(pNo));
+        return deletedCustomerInfo;
     }
 
 
-
     // CUSTOM METHODS //
-
     /**
      * Checks if the personal number of a new customer is valid
      * @param pNo       The personal number to be validated
@@ -301,37 +324,31 @@ public class BankLogic {
      * @param pNo       The personal number to search for
      * @return int      The index of the customer in the customer ArrayList. Returns -1 if the customer was not found
      */
-    private int searchForCustomer(String pNo) {
-        int customerIndex = -1;
+    private Customer getCustomerByPersonalNumber(String pNo) {
         for (Customer customer : allCustomers) {
-            customerIndex++;
             if (customer.getPERSONAL_NUMBER().equals(pNo)) {
-                return customerIndex;
+                return customer;
             }
         }
-        return -1;
+        return null;
     }
 
 
-    /**
-     * Checks if a customer and a specified account exists
-     * @param pNo           The personal number of the customer to look for
-     * @param accountNumber The account number to look for
-     * @return int[2]        The index of the customer, and the index of the account
-     */
-    private int[] searchForCustomerAndAccount(String pNo, int accountNumber) {
-        /* Holds the index of the customer, and the index of the account */
-        int[] customerIndexAccountIndex = new int[2];
+    private Account getAccountByCustomer(Customer customer, int accountNumber) {
 
-        /* Search and set the index */
-        customerIndexAccountIndex[0] = searchForCustomer(pNo);
-
-        /* If the customer was not found, return */
-        if (customerIndexAccountIndex[0] < 0) {
-            return customerIndexAccountIndex;
+        /* Savings acounts */
+        for (int i = 0; i < customer.getNumberOfSavingsAccounts(); i++) {
+            if (customer.getSavingsAccount(i).getAccountNumber() == accountNumber) {
+                return customer.getSavingsAccount(i);
+            }
         }
-        customerIndexAccountIndex[1] = allCustomers.get(customerIndexAccountIndex[0]).searchForCustomerAccount(accountNumber);
-        return customerIndexAccountIndex;
+
+        for (int i = 0; i < customer.getNumberOfCreditAccounts(); i++) {
+            if (customer.getCreditAccount(i).getAccountNumber() == accountNumber) {
+                return customer.getCreditAccount(i);
+            }
+        }
+        return null;
     }
 
 
@@ -355,13 +372,14 @@ public class BankLogic {
 
     /**
      * Gets information about an account to be deleted
-     * @param customerIndex     The index of the customer object to get the information from
-     * @param accountIndex      The index of the account to get the information from
-     * @return String           Account number, balance, account type, and interest
+     * @param account   The account to get info from
+     * @return String   Account number, balance, account type, and interest
      */
-    private String getDeletedAccountInfo(int customerIndex, int accountIndex) {
-        String balance = formatMoneyString(allCustomers.get(customerIndex).getAccountBalance(accountIndex));
-        String interest = NumberFormat.getCurrencyInstance(new Locale("sv","SE")).format(allCustomers.get(customerIndex).calculateInterest(accountIndex));
-        return allCustomers.get(customerIndex).getAccountNumber(accountIndex) + " " + balance + " " + Account.getACCOUNT_TYPE() + " " + interest;
+    private String getDeletedAccountInfo(Account account) {
+        BigDecimal interest = account.getBalance().multiply(account.getInterestRate().divide(new BigDecimal("100")));
+
+        String balance = account.getBalance().toString();
+        String interestStr = NumberFormat.getCurrencyInstance(new Locale("sv","SE")).format(interest);
+        return account.getAccountNumber() + " " + balance + " " + account.getAccountType() + " " + interestStr;
     }
 }

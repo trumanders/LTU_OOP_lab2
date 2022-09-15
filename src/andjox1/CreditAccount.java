@@ -3,19 +3,44 @@ package andjox1;
 import java.math.BigDecimal;
 
 public class CreditAccount extends Account {
+    private final static BigDecimal DEBT_INTEREST_RATE = new BigDecimal("0.07");
+    private final static BigDecimal SAVINGS_INTEREST_RATE = new BigDecimal("0.005");
+    private BigDecimal interestRate;
+    private final static int CREDIT_LIMIT = -5000;
+    private final String ACCOUNT_TYPE = "Kreditkonto";
 
-    private final static String ACCOUNT_TYPE = "Credit account";
-    private final BigDecimal DEBT_INTEREST_RATE = new BigDecimal("0.07");
-    private final BigDecimal SAVINGS_INTEREST_RATE = new BigDecimal("0.005");
-    private final int CREDIT_LIMIT = -5000;
-    private static int numberOfAccounts = 0;
     public CreditAccount() {
         super();
-        numberOfAccounts++;
     }
 
-    public int getNumberOfAccounts() {
-        return numberOfAccounts;
+    /**
+     * Calculates the balance after a withdrawal
+     * @param amount    The amount of money to withdraw
+     */
+    public void withdraw(int amount) {
+        balance = balance.subtract(new BigDecimal(amount));
     }
 
+
+    public BigDecimal calculateInterest() {
+
+        return new BigDecimal("0");
+    }
+
+
+    /* GETTERS */
+
+    public BigDecimal getInterestRate() {
+        if (getBalance().compareTo(new BigDecimal("0")) > 0) {
+            interestRate = SAVINGS_INTEREST_RATE;
+        } else {
+            interestRate = DEBT_INTEREST_RATE;
+        }
+        return interestRate;
+    }
+
+
+    public String getAccountType() {
+        return ACCOUNT_TYPE;
+    }
 }
