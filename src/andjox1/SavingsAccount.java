@@ -26,9 +26,6 @@ public class SavingsAccount extends Account {
         return WITHDRAWAL_FEE;
     }
 
-    public BigDecimal calculateInterest() {
-        return new BigDecimal("0");
-    }
     public String getAccountType() {
         return ACCOUNT_TYPE;
     }

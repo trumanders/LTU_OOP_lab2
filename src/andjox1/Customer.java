@@ -13,7 +13,9 @@ public class Customer {
     private String lName;
     private final String PERSONAL_NUMBER;
 
-    /* Contains a list of the customer's credit accounts */
+    /* Contains a list of all the customer's accounts */
+
+    private ArrayList<Account> allAccounts = new ArrayList<>();
     private ArrayList<CreditAccount> creditAccounts = new ArrayList<>();
 
     /* Contains a list of the customer's savings accounts */
@@ -30,7 +32,7 @@ public class Customer {
      * Creates a new savings account
      */
     public void addSavingsAccount() {
-        this.savingsAccounts.add(new SavingsAccount());
+        this.allAccounts.add(new SavingsAccount());
     }
 
 
@@ -38,9 +40,8 @@ public class Customer {
      * Creates a new credit account
      */
     public void addCreditAccount() {
-        this.creditAccounts.add(new CreditAccount());
+        this.allAccounts.add(new CreditAccount());
     }
-
 
 
     /**
@@ -64,12 +65,8 @@ public class Customer {
      * Deletes the account with the specified index in the account-ArrayList
      * @param index     The index of the account to be deleted
      */
-    public void deleteSavingsAccount(SavingsAccount account) {
-        savingsAccounts.remove(account);
-    }
-
-    public void deleteCreditAccount(CreditAccount account) {
-        creditAccounts.remove(account);
+    public void deleteAccount(Account account) {
+        allAccounts.remove(account);
     }
 
     public void deleteAllSavingsAccounts() {
@@ -87,23 +84,10 @@ public class Customer {
      * @param index     The account index in the ArrayList
      * @return          SavingsAccount-object
      */
-    public SavingsAccount getSavingsAccount(int index) {
-        return savingsAccounts.get(index);
+    public Account getAccount(int index) {
+        return allAccounts.get(index);
     }
 
-    /**
-     * Get the credit account at the specified index
-     * @param index     The account index in the ArrayList
-     * @return          CreditAccount-object
-     */
-    public CreditAccount getCreditAccount(int index) {
-        return creditAccounts.get(index);
-    }
-
-    /**
-     * Get the customer's personal number
-     * @return String   The customer's personal number
-     */
     public String getPERSONAL_NUMBER() {
         return this.PERSONAL_NUMBER;
     }
@@ -130,6 +114,10 @@ public class Customer {
      */
     public String getFullName() {
         return getfName() + " " + getlName();
+    }
+
+    public int getNumberOfAccounts() {
+        return allAccounts.size();
     }
 
     public int getNumberOfSavingsAccounts() {

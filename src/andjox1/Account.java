@@ -8,7 +8,8 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * This class defines the bank accounts.
+ * This class defines the bank accounts. It is the abstract base
+ * class of SavingsAccounts and CreditAccoints
  * @author Anders Johansson, andjox-1
  */
 public abstract class Account {
@@ -24,7 +25,10 @@ public abstract class Account {
     }
 
 
-    /* TRANSACTIONS */
+    /**
+     * Saves the transactions made on the account
+     * @param amount    The amount that is being withdrawn or deposited
+     */
     public void saveTransaction(int amount) {
         SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String currentTime = time.format(new Date());
@@ -41,14 +45,11 @@ public abstract class Account {
         balance = balance.add(new BigDecimal(amount));
         saveTransaction(amount);
     }
-
     public abstract void withdraw(int amount);
     public abstract BigDecimal getInterestRate();
-    public abstract BigDecimal calculateInterest();
     public abstract String getAccountType();
 
     /* GETTERS */
-
     /**
      * Gets the account number
      * @return int  The account number
@@ -58,13 +59,12 @@ public abstract class Account {
     }
 
 
-
     /**
      * Gets the balance od the account
      * @return BigDecimal   The account balance
      */
     public BigDecimal getBalance() {
-        return balance;
+        return this.balance;
     }
 
 

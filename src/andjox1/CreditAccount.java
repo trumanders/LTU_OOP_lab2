@@ -23,13 +23,11 @@ public class CreditAccount extends Account {
     }
 
 
-    public BigDecimal calculateInterest() {
-
-        return new BigDecimal("0");
-    }
-
-
-    /* GETTERS */
+    /**
+     * Gets the interest rate based on the state of the balance. Positive money gives 0.5% positive interest.
+     * Negative money gives 7% negative interest.
+     * @return BigDecimal   The correct interest rate based on the balance
+     */
     public BigDecimal getInterestRate() {
         if (getBalance().compareTo(new BigDecimal("0")) >= 0) {
             interestRate = SAVINGS_INTEREST_RATE;
@@ -40,9 +38,18 @@ public class CreditAccount extends Account {
     }
 
 
+    /**
+     * Gets the account type
+     * @return String   The account type
+     */
     public String getAccountType() {
         return ACCOUNT_TYPE;
     }
+
+    /**
+     * Gets the value of the maximum credit for credit accounts
+     * @return int  The credit limit
+     */
     public static int getCreditLimit() {
         return CREDIT_LIMIT;
     }

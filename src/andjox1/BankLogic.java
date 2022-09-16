@@ -101,24 +101,16 @@ public class BankLogic {
         customerInfo.add(pNo + " " + customer.getFullName());
         /* Then add the information about each account. */
 
-        /* Iterate through credit accounts */
-        for (int i = 0; i < customer.getNumberOfCreditAccounts(); i++) {
-            String accountNumber = Integer.toString(customer.getCreditAccount(i).getAccountNumber());
-            String formatBalance = formatMoneyString(customer.getCreditAccountBalance(i));
-            String formatInterestRate = formatPercentString(customer.getCreditAccount(i).getInterestRate());
-            customerInfo.add(accountNumber + " " + formatBalance + " " + customer.getCreditAccount(i).getAccountType() + " " + formatInterestRate);
-        }
-
-        /* Iterate through savings accounts */
-        for (int i = 0; i < customer.getNumberOfSavingsAccounts(); i++) {
-            String accountNumber = Integer.toString(customer.getSavingsAccount(i).getAccountNumber());
-            String formatBalance = formatMoneyString(customer.getSavingsAccountBalance(i));
-            String formatInterestRate = formatPercentString(customer.getSavingsAccount(i).getInterestRate());
-            customerInfo.add(accountNumber + " " + formatBalance + " " + customer.getSavingsAccount(i).getAccountType() + " " + formatInterestRate);
+        /* Iterate through all accounts */
+        for (int i = 0; i < customer.getNumberOfAccounts(); i++) {
+            Account account = customer.getAccount(i);
+            String accountNumber = Integer.toString(account.getAccountNumber());
+            String formatBalance = formatMoneyString(account.getBalance());
+            String formatInterestRate = formatPercentString(account.getInterestRate());
+            customerInfo.add(accountNumber + " " + formatBalance + " " + account.getAccountType() + " " + formatInterestRate);
         }
         return customerInfo;
     }
-
 
     /**
      * Method to change a customer's name
@@ -241,8 +233,7 @@ public class BankLogic {
         /* Get account info */
         String deletedAccountInfo = getDeletedAccountInfo(account);
         /* Delete the account */
-        if (account.getClass() == SavingsAccount.class) customer.deleteSavingsAccount((SavingsAccount) account);
-        if (account.getClass() == CreditAccount.class) customer.deleteCreditAccount((CreditAccount) account);
+        customer.deleteAccount(account);
         return deletedAccountInfo;
     }
 
@@ -259,15 +250,11 @@ public class BankLogic {
         ArrayList<String> deletedCustomerInfo = new ArrayList<>();
         /* Add personal number and name as the first element */
         deletedCustomerInfo.add(pNo + " " + customer.getFullName());
-        /* Add information about each SAVINGS account in the following elements of the ArrayList */
-        for (int i = 0; i < customer.getNumberOfSavingsAccounts(); i++) {
+        /* Add information about each ACCOUNT in the following elements of the ArrayList */
+        for (int i = 0; i < customer.getNumberOfAccounts(); i++) {
+            Account account = customer.getAccount(i);
             /* For each account, add the information */
-            deletedCustomerInfo.add(getDeletedAccountInfo(customer.getSavingsAccount(i)));
-        }
-        /* Add information about each CREDIT account in the following elements of the ArrayList */
-        for (int i = 0; i < customer.getNumberOfCreditAccounts(); i++) {
-            /* For each account, add the information */
-            deletedCustomerInfo.add(getDeletedAccountInfo(customer.getCreditAccount(i)));
+            deletedCustomerInfo.add(getDeletedAccountInfo(account));
         }
 
         /* Delete customer */
@@ -317,14 +304,10 @@ public class BankLogic {
      */
     private Account getAccountByCustomer(Customer customer, int accountNumber) {
         /* Savings accounts */
-        for (int i = 0; i < customer.getNumberOfSavingsAccounts(); i++) {
-            if (customer.getSavingsAccount(i).getAccountNumber() == accountNumber) {
-                return customer.getSavingsAccount(i);
-            }
-        }
-        for (int i = 0; i < customer.getNumberOfCreditAccounts(); i++) {
-            if (customer.getCreditAccount(i).getAccountNumber() == accountNumber) {
-                return customer.getCreditAccount(i);
+        for (int i = 0; i < customer.getNumberOfAccounts(); i++) {
+            Account account = customer.getAccount(i);
+            if (account.getAccountNumber() == accountNumber) {
+                return account;
             }
         }
         return null;
@@ -360,7 +343,6 @@ public class BankLogic {
      */
     private String getDeletedAccountInfo(Account account) {
         BigDecimal interest = account.balance.multiply(account.getInterestRate().divide(new BigDecimal("100")));
-
         String formattedBalance = formatMoneyString(account.balance);
         String interestStr = NumberFormat.getCurrencyInstance(new Locale("sv","SE")).format(interest);
         return account.getAccountNumber() + " " + formattedBalance + " " + account.getAccountType() + " " + interestStr;

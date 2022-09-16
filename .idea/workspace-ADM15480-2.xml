@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="e07ac2e1-82c3-499b-b75b-3f6812085db1" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/out/production/Assignment2_extendedBank/andjox1/BankLogic.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Assignment2_extendedBank/andjox1/BankLogic.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Assignment2_extendedBank/andjox1/CreditAccount.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Assignment2_extendedBank/andjox1/CreditAccount.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Assignment2_extendedBank/andjox1/SavingsAccount.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Assignment2_extendedBank/andjox1/SavingsAccount.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/andjox1/BankLogic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/andjox1/BankLogic.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/andjox1/CreditAccount.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/andjox1/CreditAccount.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/andjox1/SavingsAccount.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/andjox1/SavingsAccount.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2EcJnmwKzOka2yKsD9wJXX5p5js" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "last_opened_file_path": "C:/-=ANDERS=-/OneDrive/Programmering/-=SKOLA=-/-= Luleå Java OOP =-/Assignment2_extendedBank/src/andjox1",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.0",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "preferences.keymap"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\-=ANDERS=-\OneDrive\Programmering\-=SKOLA=-\-= Luleå Java OOP =-\Assignment2_extendedBank\src\andjox1" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\-=ANDERS=-\OneDrive\Programmering\-=SKOLA=-\-= Luleå Java OOP =-\Assignment2_extendedBank\src\andjox1" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.andjox1.TestBank2">
+    <configuration name="TestBank2" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="TestBank2" />
+      <module name="Assignment2_extendedBank" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="andjox1.TestBank2" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="andjox1.TestBank2" />
+      <module name="Assignment2_extendedBank" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="andjox1.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.TestBank2" />
+      <item itemvalue="Application.andjox1.TestBank2" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.andjox1.TestBank2" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e07ac2e1-82c3-499b-b75b-3f6812085db1" name="Changes" comment="" />
+      <created>1662889109226</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1662889109226</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
