@@ -3,8 +3,8 @@ package andjox1;
 import java.math.BigDecimal;
 
 public class CreditAccount extends Account {
-    private final static BigDecimal DEBT_INTEREST_RATE = new BigDecimal("0.07");
-    private final static BigDecimal SAVINGS_INTEREST_RATE = new BigDecimal("0.005");
+    private final static BigDecimal DEBT_INTEREST_RATE = new BigDecimal("7");
+    private final static BigDecimal SAVINGS_INTEREST_RATE = new BigDecimal("0.5");
     private BigDecimal interestRate;
     private final static int CREDIT_LIMIT = -5000;
     private final String ACCOUNT_TYPE = "Kreditkonto";
@@ -19,6 +19,7 @@ public class CreditAccount extends Account {
      */
     public void withdraw(int amount) {
         balance = balance.subtract(new BigDecimal(amount));
+        saveTransaction(amount * -1);
     }
 
 
@@ -29,9 +30,8 @@ public class CreditAccount extends Account {
 
 
     /* GETTERS */
-
     public BigDecimal getInterestRate() {
-        if (getBalance().compareTo(new BigDecimal("0")) > 0) {
+        if (getBalance().compareTo(new BigDecimal("0")) >= 0) {
             interestRate = SAVINGS_INTEREST_RATE;
         } else {
             interestRate = DEBT_INTEREST_RATE;
@@ -42,5 +42,8 @@ public class CreditAccount extends Account {
 
     public String getAccountType() {
         return ACCOUNT_TYPE;
+    }
+    public static int getCreditLimit() {
+        return CREDIT_LIMIT;
     }
 }

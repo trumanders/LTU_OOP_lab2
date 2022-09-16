@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import andjox1.BankLogic;
 /**
  * D0018D, Lab 2: Testar att klasserna Account, Customer and BankLogic
  * fungerar som de ska. Notera att klassen kan uppdateras under kursens gång.

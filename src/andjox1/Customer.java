@@ -64,14 +64,21 @@ public class Customer {
      * Deletes the account with the specified index in the account-ArrayList
      * @param index     The index of the account to be deleted
      */
-    public void deleteSavingsAccount(int index) {
-        savingsAccounts.remove(index);
+    public void deleteSavingsAccount(SavingsAccount account) {
+        savingsAccounts.remove(account);
     }
 
-    public void deleteCreditAccount(int index) {
-        creditAccounts.remove(index);
+    public void deleteCreditAccount(CreditAccount account) {
+        creditAccounts.remove(account);
     }
 
+    public void deleteAllSavingsAccounts() {
+        savingsAccounts.clear();
+    }
+
+    public void deleteAllCreditAccounts() {
+        creditAccounts.clear();
+    }
 
     // GETTERS //
 
