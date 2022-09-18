@@ -13,15 +13,6 @@ public class CreditAccount extends Account {
     private final static int CREDIT_LIMIT = -5000;
     private final String ACCOUNT_TYPE = "Kreditkonto";
 
-    /**
-     * Performs the withdrawal on the account and saves the transaction.
-     * @param amount    The amount of money to withdraw
-     */
-    public void withdraw(int amount) {
-        balance = balance.subtract(new BigDecimal(amount));
-        saveTransaction(amount * -1);
-    }
-
 
     /**
      * Gets the interest rate based on the state of the balance. Positive money gives 0.5% positive interest.

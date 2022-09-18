@@ -24,36 +24,21 @@ public abstract class Account {
         accountNumber = countingAllAccountNumbers;
     }
 
-
-    public abstract void withdraw(int amount);
     public abstract BigDecimal getInterestRate();
     public abstract String getAccountType();
 
-
     /**
-     * Saves the transactions made on the account
-     * @param amount    The amount that is being withdrawn or deposited
+     * This method performs a transaction on the account. The amount passed
+     * in is either positive or negative depending on whether it is a deposit
+     * or a withdrawal. It calls the method to save the transaction after the transaction is made.
+     * @param amount    The amount to be withdrawn or deposited
      */
-    public void saveTransaction(int amount) {
-        SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String currentTime = time.format(new Date());
-        String formattedAmount = NumberFormat.getCurrencyInstance(new Locale("sv","SE")).format(amount);
-        String formattedBalance = NumberFormat.getCurrencyInstance(new Locale("sv", "SE")).format(balance);
-        transactions.add(currentTime + " " + formattedAmount + " Saldo: " + formattedBalance);
-    }
-
-
-    /**
-     * Calculates the new balance after a deposit
-     * @param amount    The amount of money to deposit
-     */
-    public void deposit(int amount) {
+    public void makeTransaction(int amount) {
         balance = balance.add(new BigDecimal(amount));
         saveTransaction(amount);
     }
 
 
-    /* GETTERS */
     /**
      * Gets the account number
      * @return int  The account number
@@ -78,5 +63,18 @@ public abstract class Account {
      */
     public static int getCountingAllAccountNumbers() {
         return countingAllAccountNumbers;
+    }
+
+
+    /**
+     * Saves the information about a transfer transactions made on the account
+     * @param amount    The amount that is being withdrawn or deposited
+     */
+    private void saveTransaction(int amount) {
+        SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentTime = time.format(new Date());
+        String formattedAmount = NumberFormat.getCurrencyInstance(new Locale("sv","SE")).format(amount);
+        String formattedBalance = NumberFormat.getCurrencyInstance(new Locale("sv", "SE")).format(balance);
+        transactions.add(currentTime + " " + formattedAmount + " Saldo: " + formattedBalance);
     }
  }

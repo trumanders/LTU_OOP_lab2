@@ -21,7 +21,7 @@ public class BankLogic {
      * @param surname   Customer's last name
      * @param pNo       Customer's personal number
      */
-    public boolean createCustomer(String name, String surname, String pNo) {
+    protected boolean createCustomer(String name, String surname, String pNo) {
         // Check if personal number IS VALID (does not already exist)
         if (isPersonalNumberValid(pNo)) {
             /* If personal number is valid, create the customer and add to the ArrayList */
@@ -37,7 +37,7 @@ public class BankLogic {
      * @param pNo   The personal number of the customer to create a new account for
      * @return int  The account number of the created account
      */
-    public int createSavingsAccount(String pNo) {
+    protected int createSavingsAccount(String pNo) {
         Customer customer = getCustomerByPersonalNumber(pNo);
         if (customer == null) return -1;
         customer.addSavingsAccount();
@@ -50,7 +50,7 @@ public class BankLogic {
      * @param pNo   The personal number of the customer to create a new account for
      * @return int  The account number of the created account
      */
-    public int createCreditAccount(String pNo) {
+    protected int createCreditAccount(String pNo) {
         Customer customer = getCustomerByPersonalNumber(pNo);
         if (customer == null) return -1;
         customer.addCreditAccount();
@@ -166,13 +166,15 @@ public class BankLogic {
      * @return boolean  Returns true of the amount was > 0, both customer and its account was found, and the deposit was made.
      */
     public boolean deposit(String pNo, int accountId, int amount) {
+
+        /* Check for valid personal number and get the account */
         Customer customer = getCustomerByPersonalNumber(pNo);
         if (amount < 0 || customer == null) return false;
         Account account = getAccountByCustomer(customer, accountId);
         if (account == null) return false;
 
         /* Make deposit */
-        account.deposit(amount);
+        account.makeTransaction(amount);
         return true;
     }
 
@@ -186,39 +188,50 @@ public class BankLogic {
      * @return boolean  Returns true of the amount was > 0, both customer and its account was found, and the withdrawal was made.
      */
     public boolean withdraw(String pNo, int accountId, int amount) {
+
+        /* Does the personal number exist? */
         Customer customer = getCustomerByPersonalNumber(pNo);
         if (customer == null) {
             return false;
         }
+
+        /* Does the account exist for that customer? */
         Account account = getAccountByCustomer(customer, accountId);
         if (amount < 0 || account == null) {
             return false;
         }
 
+        /* If the account is a savings account */
         if (account.getClass() == SavingsAccount.class) {
+
             /* Check if there is a free deposit on the account */
-            if (!((SavingsAccount) account).getAllowFreeDeposit()) {
+            if (!((SavingsAccount)account).getAllowFreeWithdrawal()) {
+
                 /* Add deposit fee */
                 amount += SavingsAccount.getWithdrawalFee().divide(new BigDecimal("100")).multiply(new BigDecimal(amount)).intValue();
             }
+
+            /* Set free deposit to false */
+            ((SavingsAccount)account).setAllowFreeWithdrawal(false);
+
             /* Check if there is enough money on the account */
-            if (account.balance.compareTo(new BigDecimal(amount)) >= 0) {
-                account.withdraw(amount);
-                return true;
-            } else {
+            if (account.balance.compareTo(new BigDecimal(amount)) < 0) {
                 return false;
             }
         }
 
-        /* For credit accounts, check the credit limit */
+        /* If the account is a credit account */
         if (account.getClass() == CreditAccount.class) {
-            /* If balance minus the amount to withdraw < Credit limit */
+
+            /* If balance minus withdrawal is < creditLimit */
             if (account.balance.subtract(new BigDecimal(amount)).compareTo(new BigDecimal(CreditAccount.getCreditLimit())) < 0) {
                 return false;
-            } else {
-                account.withdraw(amount);
             }
         }
+
+        /* Set the withdrawal amount to negative to call makeTransaction */
+        amount *= -1;
+        account.makeTransaction(amount);
         return true;
     }
 
@@ -323,7 +336,7 @@ public class BankLogic {
      * @param money     The BigDecimal number to be formatted
      * @return String   The BigDecimal as a String
      */
-    public String formatMoneyString(BigDecimal money) {
+    private String formatMoneyString(BigDecimal money) {
         return NumberFormat.getCurrencyInstance(new Locale("sv","SE")).format(money);
     }
 

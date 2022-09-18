@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * This class defines the customers and performs actions on the accounts. Set customer name, create accounts,
  * delete accounts, add savings account, add credit account.
  * Interest, and search for a customer's accounts, and hand out information about a customer's
- * accounts.
+ * accounts. This class holds the list of a customer's accounts.
  * @author Anders Johansson, andjox-1
  */
 public class Customer {
@@ -17,6 +17,8 @@ public class Customer {
     /* Contains a list of all the customer's accounts */
     private ArrayList<Account> allAccounts = new ArrayList<>();
 
+
+    /* Constructor */
     public Customer(String fName, String lName, String persNum) {
         this.fName = fName;
         this.lName = lName;
@@ -77,6 +79,7 @@ public class Customer {
         return allAccounts.get(index);
     }
 
+
     /**
      * Gets the personal number for the customer.
      * @return String   The customer's personal number.
@@ -114,7 +117,8 @@ public class Customer {
 
 
     /**
-     * Gets the total number of accounts for the customer by checking the size of the account ArrayList.
+     * Gets the total number of accounts for the customer by checking the size of the account ArrayList. This
+     * is used to iterate through the account list.
      * @return int  The total number of accounts for the customer.
      */
     public int getNumberOfAccounts() {
