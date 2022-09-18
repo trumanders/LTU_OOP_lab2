@@ -2,6 +2,10 @@ package andjox1;
 
 import java.math.BigDecimal;
 
+/**
+ * This class inherits from Account and defines credit accounts.
+ * @author Anders Johansson, andjox-1
+ */
 public class CreditAccount extends Account {
     private final static BigDecimal DEBT_INTEREST_RATE = new BigDecimal("7");
     private final static BigDecimal SAVINGS_INTEREST_RATE = new BigDecimal("0.5");
@@ -9,12 +13,8 @@ public class CreditAccount extends Account {
     private final static int CREDIT_LIMIT = -5000;
     private final String ACCOUNT_TYPE = "Kreditkonto";
 
-    public CreditAccount() {
-        super();
-    }
-
     /**
-     * Calculates the balance after a withdrawal
+     * Performs the withdrawal on the account and saves the transaction.
      * @param amount    The amount of money to withdraw
      */
     public void withdraw(int amount) {
@@ -45,6 +45,7 @@ public class CreditAccount extends Account {
     public String getAccountType() {
         return ACCOUNT_TYPE;
     }
+
 
     /**
      * Gets the value of the maximum credit for credit accounts

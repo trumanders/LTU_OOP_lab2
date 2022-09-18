@@ -1,4 +1,5 @@
 package andjox1;
+
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -12,6 +13,23 @@ import java.util.Locale;
  */
 public class BankLogic {
     private final ArrayList<Customer> allCustomers = new ArrayList<>();
+
+
+    /**
+     * Creates a new customer object. Checks if personal number is unique.
+     * @param name      Customer's first name
+     * @param surname   Customer's last name
+     * @param pNo       Customer's personal number
+     */
+    public boolean createCustomer(String name, String surname, String pNo) {
+        // Check if personal number IS VALID (does not already exist)
+        if (isPersonalNumberValid(pNo)) {
+            /* If personal number is valid, create the customer and add to the ArrayList */
+            allCustomers.add(new Customer(name, surname, pNo));
+            return true;
+        }
+        return false;
+    }
 
 
     /**
@@ -57,6 +75,7 @@ public class BankLogic {
         return account.transactions;
     }
 
+
     /**
      * Returns a String ArrayList with all customers' persNum and full name.
      */
@@ -66,22 +85,6 @@ public class BankLogic {
             allCustomersPersNumAndName.add(customer.getPERSONAL_NUMBER() + " " + customer.getFullName());
         }
         return allCustomersPersNumAndName;
-    }
-
-    /**
-     * Creates a new customer object. Checks if personal number is unique.
-     * @param name      Customer's first name
-     * @param surname   Customer's last name
-     * @param pNo       Customer's personal number
-     */
-    public boolean createCustomer(String name, String surname, String pNo) {
-        // Check if personal number IS VALID (does not already exist)
-        if (isPersonalNumberValid(pNo)) {
-            /* If personal number is valid, create the customer and add to the ArrayList */
-            allCustomers.add(new Customer(name, surname, pNo));
-            return true;
-        }
-        return false;
     }
 
 
@@ -112,24 +115,6 @@ public class BankLogic {
         return customerInfo;
     }
 
-    /**
-     * Method to change a customer's name
-     * @param name      The customer's new first name
-     * @param surname   The customer's new last name
-     * @param pNo       The personal number of the customer to change its name
-     * @return boolean  false: if both strings passed are empty, or if the customer was not found
-     *                  true: if the operation was successful
-     */
-    public boolean changeCustomerName(String name, String surname, String pNo) {
-        if (name.length() == 0 && surname.length() == 0) return false;
-        /* Search for the customer to change name */
-        Customer customer = getCustomerByPersonalNumber(pNo);
-        if (customer == null) return false;
-        if (name.length() > 0) customer.setfName(name);
-        if (surname.length() > 0) customer.setlName(surname);
-        return true;
-    }
-
 
     /**
      * Gets information about a specific account: account number, balance, account type, interest rate
@@ -155,6 +140,25 @@ public class BankLogic {
 
 
     /**
+     * Method to change a customer's name
+     * @param name      The customer's new first name
+     * @param surname   The customer's new last name
+     * @param pNo       The personal number of the customer to change its name
+     * @return boolean  false: if both strings passed are empty, or if the customer was not found
+     *                  true: if the operation was successful
+     */
+    public boolean changeCustomerName(String name, String surname, String pNo) {
+        if (name.length() == 0 && surname.length() == 0) return false;
+        /* Search for the customer to change name */
+        Customer customer = getCustomerByPersonalNumber(pNo);
+        if (customer == null) return false;
+        if (name.length() > 0) customer.setfName(name);
+        if (surname.length() > 0) customer.setlName(surname);
+        return true;
+    }
+
+
+    /**
      * Performs a deposit to the specified account
      * @param pNo       The personal number of the customer
      * @param accountId The account number to make a deposit to
@@ -174,7 +178,8 @@ public class BankLogic {
 
 
     /**
-     * Makes a withdrawal from an account
+     * Makes a withdrawal on the account. If it is a savings account, and it is the first withdrawal there is no
+     * withdrawal fee, otherwise the method adds the withdrawal fee 2 %.
      * @param pNo       The customer's personal number
      * @param accountId The account number to make the withdrawal from
      * @param amount    The amount of money to withdraw
@@ -190,12 +195,11 @@ public class BankLogic {
             return false;
         }
 
-        /* For savings account */
         if (account.getClass() == SavingsAccount.class) {
             /* Check if there is a free deposit on the account */
             if (!((SavingsAccount) account).getAllowFreeDeposit()) {
                 /* Add deposit fee */
-                amount += SavingsAccount.getWithdrawalFee().multiply(new BigDecimal(amount)).intValue();
+                amount += SavingsAccount.getWithdrawalFee().divide(new BigDecimal("100")).multiply(new BigDecimal(amount)).intValue();
             }
             /* Check if there is enough money on the account */
             if (account.balance.compareTo(new BigDecimal(amount)) >= 0) {

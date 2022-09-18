@@ -25,6 +25,11 @@ public abstract class Account {
     }
 
 
+    public abstract void withdraw(int amount);
+    public abstract BigDecimal getInterestRate();
+    public abstract String getAccountType();
+
+
     /**
      * Saves the transactions made on the account
      * @param amount    The amount that is being withdrawn or deposited
@@ -37,6 +42,7 @@ public abstract class Account {
         transactions.add(currentTime + " " + formattedAmount + " Saldo: " + formattedBalance);
     }
 
+
     /**
      * Calculates the new balance after a deposit
      * @param amount    The amount of money to deposit
@@ -45,9 +51,7 @@ public abstract class Account {
         balance = balance.add(new BigDecimal(amount));
         saveTransaction(amount);
     }
-    public abstract void withdraw(int amount);
-    public abstract BigDecimal getInterestRate();
-    public abstract String getAccountType();
+
 
     /* GETTERS */
     /**
