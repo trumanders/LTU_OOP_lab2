@@ -10,7 +10,7 @@ public class SavingsAccount extends Account {
     private final BigDecimal INTEREST_RATE = new BigDecimal("1.2");
     private final static BigDecimal WITHDRAWAL_FEE = new BigDecimal("2");
     private final static String ACCOUNT_TYPE = "Sparkonto";
-    private boolean allowFreeWithdrawal;
+    private boolean allowFreeWithdrawal = true;
 
 
     /* Constructor*/
@@ -19,9 +19,41 @@ public class SavingsAccount extends Account {
         allowFreeWithdrawal = true;
     }
 
-    public void setAllowFreeWithdrawal(boolean allow) {
-        this.allowFreeWithdrawal = allow;
+
+    /**
+     * Makes a withdrawal transaction according to the
+     * rules for withdrawal on the account type savings account. Saves the
+     * transaction.
+     * @param amount    The amount to withdraw from the savings account
+     * @return          Boolean - true for successful withdrawal, else returns false.
+     */
+    @Override
+    public boolean makeWithdrawal(int amount) {
+
+        /* Convert amount to BigDecimal */
+        BigDecimal bigDecAmount = new BigDecimal(amount);
+        BigDecimal fee = new BigDecimal("0");
+        if (!allowFreeWithdrawal) {
+
+            /* Fee = amount * (withdrawal_percent / 100) */
+            fee = new BigDecimal(amount).multiply(WITHDRAWAL_FEE.divide(new BigDecimal("100")));
+        }
+
+        /* If not enough money (If balance minus amount and fee is less than zero */
+        if (balance.subtract(bigDecAmount.add(fee)).compareTo(new BigDecimal("0")) < 0) {
+            return false;
+        }
+
+        bigDecAmount = bigDecAmount.add(fee);
+        balance = balance.subtract(bigDecAmount);
+
+        /* Make the withdrawn amount negative to be saved as a withdrawal transaction */
+        saveTransaction(bigDecAmount.intValue() * -1);
+
+        allowFreeWithdrawal = false;
+        return true;
     }
+
 
     /**
      * Gets the account interest rate, which is 1.2 % for savings acounts.
@@ -31,14 +63,6 @@ public class SavingsAccount extends Account {
         return INTEREST_RATE;
     }
 
-    /**
-     * Gets the withdrawal fee for savings accounts, which is 2 %
-     * @return BigDecimal   The withdrawal fee
-     */
-    public static BigDecimal getWithdrawalFee() {
-        return WITHDRAWAL_FEE;
-    }
-
 
     /**
      * Gets the account type for savings account
@@ -46,14 +70,5 @@ public class SavingsAccount extends Account {
      */
     public String getAccountType() {
         return ACCOUNT_TYPE;
-    }
-
-
-    /**
-     * Gets allowFreeWithdrawal
-     * @return boolean  Allow free deposit true or false.
-     */
-    public boolean getAllowFreeWithdrawal() {
-        return  allowFreeWithdrawal;
     }
 }

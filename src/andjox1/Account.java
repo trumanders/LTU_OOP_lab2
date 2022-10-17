@@ -23,17 +23,11 @@ public abstract class Account {
         countingAllAccountNumbers++;
         accountNumber = countingAllAccountNumbers;
     }
-
     public abstract BigDecimal getInterestRate();
     public abstract String getAccountType();
+    public abstract boolean makeWithdrawal(int amount);
 
-    /**
-     * This method performs a transaction on the account. The amount passed
-     * in is either positive or negative depending on whether it is a deposit
-     * or a withdrawal. It calls the method to save the transaction after the transaction is made.
-     * @param amount    The amount to be withdrawn or deposited
-     */
-    public void makeTransaction(int amount) {
+    public void makeDeposit(int amount) {
         balance = balance.add(new BigDecimal(amount));
         saveTransaction(amount);
     }
@@ -70,7 +64,7 @@ public abstract class Account {
      * Saves the information about a transfer transactions made on the account
      * @param amount    The amount that is being withdrawn or deposited
      */
-    private void saveTransaction(int amount) {
+    protected void saveTransaction(int amount) {
         SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String currentTime = time.format(new Date());
         String formattedAmount = NumberFormat.getCurrencyInstance(new Locale("sv","SE")).format(amount);

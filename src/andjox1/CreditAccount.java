@@ -20,12 +20,29 @@ public class CreditAccount extends Account {
      * @return BigDecimal   The correct interest rate based on the balance
      */
     public BigDecimal getInterestRate() {
-        if (getBalance().compareTo(new BigDecimal("0")) >= 0) {
+        if (balance.compareTo(new BigDecimal("0")) >= 0) {
             interestRate = SAVINGS_INTEREST_RATE;
         } else {
             interestRate = DEBT_INTEREST_RATE;
         }
         return interestRate;
+    }
+
+    /**
+     * Makes a withdrawal according to the rules for withdrawal on the
+     * account type credit account. Saves the transaction.
+     * @param amount    The amount to be withdrawn from the account
+     * @return          Boolean. True for successful transaction, else returns false;
+     */
+    public boolean makeWithdrawal(int amount) {
+
+        /* Check credit limit */
+        if ((balance.subtract(new BigDecimal(amount))).compareTo((new BigDecimal(CREDIT_LIMIT))) < 0)
+            return false;
+
+        balance = balance.subtract(new BigDecimal(amount));
+        saveTransaction(amount * -1);
+        return true;
     }
 
 
@@ -35,14 +52,5 @@ public class CreditAccount extends Account {
      */
     public String getAccountType() {
         return ACCOUNT_TYPE;
-    }
-
-
-    /**
-     * Gets the value of the maximum credit for credit accounts
-     * @return int  The credit limit
-     */
-    public static int getCreditLimit() {
-        return CREDIT_LIMIT;
     }
 }

@@ -98,12 +98,14 @@ public class BankLogic {
         /* Search for the customer using the personal number pNo */
         Customer customer = getCustomerByPersonalNumber(pNo);
         if (customer == null) return null;
+
         /* ArrayList to hold customer info to be returned */
         ArrayList<String> customerInfo = new ArrayList<>();
+
         /* Add customer name as the first element of the customerInfo */
         customerInfo.add(pNo + " " + customer.getFullName());
-        /* Then add the information about each account. */
 
+        /* Then add the information about each account. */
         /* Iterate through all accounts */
         for (int i = 0; i < customer.getNumberOfAccounts(); i++) {
             Account account = customer.getAccount(i);
@@ -169,12 +171,12 @@ public class BankLogic {
 
         /* Check for valid personal number and get the account */
         Customer customer = getCustomerByPersonalNumber(pNo);
-        if (amount < 0 || customer == null) return false;
+        if (amount <= 0 || customer == null) return false;
         Account account = getAccountByCustomer(customer, accountId);
         if (account == null) return false;
 
         /* Make deposit */
-        account.makeTransaction(amount);
+        account.makeDeposit(amount);
         return true;
     }
 
@@ -188,51 +190,19 @@ public class BankLogic {
      * @return boolean  Returns true of the amount was > 0, both customer and its account was found, and the withdrawal was made.
      */
     public boolean withdraw(String pNo, int accountId, int amount) {
+        if (amount <= 0) return false;
 
         /* Does the personal number exist? */
         Customer customer = getCustomerByPersonalNumber(pNo);
-        if (customer == null) {
-            return false;
-        }
+        if (customer == null) return false;
 
         /* Does the account exist for that customer? */
         Account account = getAccountByCustomer(customer, accountId);
-        if (amount < 0 || account == null) {
-            return false;
-        }
+        if (account == null) return false;
 
-        /* If the account is a savings account */
-        if (account.getClass() == SavingsAccount.class) {
-
-            /* Check if there is a free deposit on the account */
-            if (!((SavingsAccount)account).getAllowFreeWithdrawal()) {
-
-                /* Add deposit fee */
-                amount += SavingsAccount.getWithdrawalFee().divide(new BigDecimal("100")).multiply(new BigDecimal(amount)).intValue();
-            }
-
-            /* Set free deposit to false */
-            ((SavingsAccount)account).setAllowFreeWithdrawal(false);
-
-            /* Check if there is enough money on the account */
-            if (account.balance.compareTo(new BigDecimal(amount)) < 0) {
-                return false;
-            }
-        }
-
-        /* If the account is a credit account */
-        if (account.getClass() == CreditAccount.class) {
-
-            /* If balance minus withdrawal is < creditLimit */
-            if (account.balance.subtract(new BigDecimal(amount)).compareTo(new BigDecimal(CreditAccount.getCreditLimit())) < 0) {
-                return false;
-            }
-        }
-
-        /* Set the withdrawal amount to negative to call makeTransaction */
-        amount *= -1;
-        account.makeTransaction(amount);
-        return true;
+        /* Make withdrawal by calling the abstract account method - returns true if successful */
+        if (account.makeWithdrawal(amount)) return true;
+        else return false;
     }
 
 
